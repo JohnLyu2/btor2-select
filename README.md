@@ -16,9 +16,9 @@ cd build
 make
 ```
 
-## Component Verifiers and their Performance
+## Component Verifier Performance Data
 
-The performance data are stored in `performance_data/performance.table.csv`. They were collected from verifier-instance executions on Ubuntu 22.04 machines, each with a 3.4 GHz CPU (Intel Xeon E3-1230 v5) with 8 processing units and 33 GB of RAM. Each task was assigned 2 CPU cores, 15 GB RAM, and 15 min of CPU time limit. We used [BenchExec](https://github.com/sosy-lab/benchexec) to ensure reliable resource measurement and reproducible results.  
+The performance data of each component verifier are stored in `performance_data/performance.table.csv`. They were collected from verifier-instance executions on Ubuntu 22.04 machines, each with a 3.4 GHz CPU (Intel Xeon E3-1230 v5) with 8 processing units and 33 GB of RAM. Each task was assigned 2 CPU cores, 15 GB RAM, and 15 min of CPU time limit. We used [BenchExec](https://github.com/sosy-lab/benchexec) to ensure reliable resource measurement and reproducible results.  
 
 ## GSoC Results
 We provide a Jupyter Notebook `reproduce_gsoc.ipynb` to interactively reproduce the GSoC results.
