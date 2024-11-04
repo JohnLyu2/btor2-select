@@ -20,8 +20,8 @@ make
 
 The performance data are stored in `performance_data/performance.table.csv`. They were collected from verifier-instance executions on Ubuntu 22.04 machines, each with a 3.4 GHz CPU (Intel Xeon E3-1230 v5) with 8 processing units and 33 GB of RAM. Each task was assigned 2 CPU cores, 15 GB RAM, and 15 min of CPU time limit. We used [BenchExec](https://github.com/sosy-lab/benchexec) to ensure reliable resource measurement and reproducible results.  
 
-## Reproducibility
-We provide a Jupyter Notebook `reproduce.ipynb` to interactively reproduce our results. The performance data are stored in `performance_data/performance.table.csv`. They were collected from verifier-instance executions on Ubuntu 22.04 machines, each with a 3.4 GHz CPU (Intel Xeon E3-1230 v5) with 8 processing units and 33 GB of RAM. Each task was assigned 2 CPU cores, 15 GB RAM, and 15 min of CPU time limit. We used [BenchExec](https://github.com/sosy-lab/benchexec) to ensure reliable resource measurement and reproducible results.  
+## GSoC Results
+We provide a Jupyter Notebook `reproduce_gsoc.ipynb` to interactively reproduce the GSoC results.
 
 ## AAAI'25 Student Abstract
 Some preliminary results from this project will be presented at the Student Program at AAAI'25! We provide a Jupyter Notebook `reproduce_aaai.ipynb` to interactively reproduce our results in our AAAI'25 paper. 
