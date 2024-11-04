@@ -234,15 +234,3 @@ def get_btor2path_from_yml(yml_path: str) -> str:
     # get the btor2 file path: the parent directory of the yml file + the btor2 file name
     btor2path = yml_path.parent / btor2file
     return str(btor2path)
-
-def main():
-    # raw_tsv_path = '/Users/zhengyanglu/Desktop/btor2select/performance_data/performance-download_0623/no_arr_config_xml_download_0623.table.csv'
-    # out_tsv_path = '/Users/zhengyanglu/Desktop/btor2select/bv_data/preprocessed_bv_results_0623.table.csv'
-    # local_parent_dir = '/Users/zhengyanglu/Desktop/btor2select_material/word-level-hwmc-benchmarks/'
-    # filter_by_prefix_and_rw_path(raw_tsv_path, 'bv/', out_tsv_path, local_parent_dir)
-    # tsv_N_fold_partition('/Users/zhengyanglu/Desktop/btor2select/bv_data/0823/bv_0823.csv', 5, '/Users/zhengyanglu/Desktop/btor2select/bv_data/0823/5fold')
-    # parse_from_tsv("/Users/zhengyanglu/Desktop/btor2select/bv_data/0823/bv_0823.csv")
-    filter_by_tool_configs('bv_data/0823/bv_0823.csv', 'bv_data/0823/filter_bv_0823.csv', [0])
-
-if __name__ == '__main__':
-    main()

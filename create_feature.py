@@ -3,7 +3,6 @@ import sys
 from pathlib import Path
 import csv
 import time
-# from sklearn.preprocessing import MinMaxScaler
 
 from parse_raw_tsv import get_btor2path_from_yml
 
@@ -62,6 +61,13 @@ def get_bitcounts(benchmark_path: str) -> list[int]:
     """
     _, bit_counts = parse_counts(benchmark_path)
     return bit_counts
+
+def get_kw_bit_counts(benchmark_path: str) -> list[int]:
+    """
+    Get the concatenation of keyword and bit counts for a btor2 benchmark (in btor2)
+    """
+    kw_counts, bit_counts = parse_counts(benchmark_path)
+    return kw_counts + bit_counts
 
 def get_feature_v1_kwcount(benchmark_path: str) -> list[int]:
     """
@@ -133,13 +139,7 @@ def read_btor2kw_csv(csv_path: str) -> dict[str, tuple[float, list[int]]]:
     return btor2kw_dict
 
 if __name__ == "__main__":
-    # if len(sys.argv) != 3:
-    #     print("Usage: python create_btor2kw.py <benchmark_dir> <output_csv>")
-    #     sys.exit(1)
-    # create_btor2kw_csv(sys.argv[1], sys.argv[2])
-    print(get_feature_v1_kwcount("/Users/zhengyanglu/Desktop/btor2select_material/word-level-hwmc-benchmarks/bv/btor2/btor2tools-examples/factorial4even.btor2"))
-    print(get_feature_v1_bits("/Users/zhengyanglu/Desktop/btor2select_material/word-level-hwmc-benchmarks/bv/btor2/btor2tools-examples/factorial4even.btor2"))
-    print()
-    print(get_feature_v1_kwcount("/Users/zhengyanglu/Desktop/btor2select_material/word-level-hwmc-benchmarks/bv/btor2/beem/adding.2.prop1-back-serstep.btor2"))
-    print(get_feature_v1_bits("/Users/zhengyanglu/Desktop/btor2select_material/word-level-hwmc-benchmarks/bv/btor2/beem/adding.2.prop1-back-serstep.btor2"))
-    # print(kw_embed)
+    if len(sys.argv) != 3:
+        print("Usage: python create_feature.py <benchmark_dir> <output_csv>")
+        sys.exit(1)
+    create_btor2kw_csv(sys.argv[1], sys.argv[2])

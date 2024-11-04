@@ -46,14 +46,14 @@ def generate_training_samples_for_config_pair_with_pca(training_res_dict, tool_c
     inputs_array = pca.fit_transform(inputs_array)
     return inputs_array, labels_array, costs_array, scaler, pca
 
-class PairwiseDecisionTree(DecisionTreeClassifier):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+# class PairwiseDecisionTree(DecisionTreeClassifier):
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
 
-    def fit(self, X, y, weights):
-        X, y = check_X_y(X, y)
-        super().fit(X, y, sample_weight=weights)
-        return self
+#     def fit(self, X, y, weights):
+#         X, y = check_X_y(X, y)
+#         super().fit(X, y, sample_weight=weights)
+#         return self
 
 class PairwiseXGBoost(xgb.XGBClassifier):
     def __init__(self, **kwargs):
@@ -95,10 +95,28 @@ def get_pw_algorithm_selection_lst(test_benchmark, model_matrix, feature_func, r
     sorted_indices = np.argsort(structured_votes, order=('votes', 'random_tiebreaker'))[::-1]
     return sorted_indices
 
+def train_pw(input_files, feature_func, target_func, save_dir, pca_flag=False):
+    Path(save_dir).mkdir(parents=True, exist_ok=True)
+    training_res_dict, tool_config_dict = parse_from_tsv_lst(input_files, num_tool_cols=2, timeout=900.0)
+    tool_config_size = len(tool_config_dict)
+    generate_samples_func = generate_training_samples_for_config_pair_with_pca if pca_flag else generate_training_samples_for_config_pair
+
+    for i in range(tool_config_size):
+        for j in range(i+1, tool_config_size):
+            inputs_array, labels_array, costs_array, scaler, pca = generate_samples_func(training_res_dict, (i, j), target_func, feature_func)
+            xg_mdeol = PairwiseXGBoost()
+            xg_mdeol.fit(inputs_array, labels_array, costs_array)
+            joblib.dump(xg_mdeol, f"{save_dir}/xg_{i}_{j}.joblib")
+            if pca_flag:
+                joblib.dump(scaler, f"{save_dir}/scaler_{i}_{j}.joblib")
+                joblib.dump(pca, f"{save_dir}/pca_{i}_{j}.joblib")
+            print(f"Finished training model for ({i}, {j})")
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--bit', action='store_true', help="Flag to use the BWA embedding")
     parser.add_argument('--pca', action='store_true', help="Flag to use PCA")
+    parser.add_argument('--cv', action='store_true', help="Flag to use cross-validation, training without 0th in the list as 0, without 1st as 1, etc.")
     parser.add_argument("--save_dir", type=str, required=True, help="Directory to save the trained models")
     parser.add_argument('input_files', nargs='+', help="List of input performance result files")
     args = parser.parse_args()
@@ -107,24 +125,23 @@ def main():
     pca_flag = args.pca
     save_dir = args.save_dir
     input_files = args.input_files
-    Path(save_dir).mkdir(parents=True, exist_ok=True)
-    feature_func = get_bitcounts if bwa_flag else get_kwcounts
-    training_res_dict, tool_config_dict = parse_from_tsv_lst(input_files, num_tool_cols=2, timeout=900.0)
-    tool_config_size = len(tool_config_dict)
-    # par2_err_900 = partial(get_par2_err, timeout=900.0)
-    par2_func = partial(get_par_N, N=2, timeout=900.0)
-    generate_samples_func = generate_training_samples_for_config_pair_with_pca if pca_flag else generate_training_samples_for_config_pair
 
-    for i in range(tool_config_size):
-        for j in range(i+1, tool_config_size):
-            inputs_array, labels_array, costs_array, scaler, pca = generate_samples_func(training_res_dict, (i, j), par2_func, feature_func)
-            xm = PairwiseXGBoost()
-            xm.fit(inputs_array, labels_array, costs_array)
-            joblib.dump(xm, f"{save_dir}/xg_{i}_{j}.joblib")
-            if pca_flag:
-                joblib.dump(scaler, f"{save_dir}/scaler_{i}_{j}.joblib")
-                joblib.dump(pca, f"{save_dir}/pca_{i}_{j}.joblib")
-            print(f"Finished training model for ({i}, {j})")
+    feature_func = get_bitcounts if bwa_flag else get_kwcounts
+    par2_func = partial(get_par_N, N=2, timeout=900.0)
+    # par2_err_900 = partial(get_par2_err, timeout=900.0)
+
+    if not args.cv:
+        train_pw(input_files, feature_func, par2_func, save_dir, pca_flag)
+    else:
+        Path(save_dir).mkdir(parents=True, exist_ok=True)
+        for i in range(len(input_files)):
+            print(f"Training for CV {i}")
+            training_files = input_files[:i] + input_files[i+1:]
+            sub_dir = f"{save_dir}/{i}"
+            train_pw(training_files, feature_func, par2_func, sub_dir, pca_flag)
+            print(f"Finished training for {i}\n")
+
 
 if __name__ == "__main__":
     main()
+

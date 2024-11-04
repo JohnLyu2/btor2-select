@@ -106,6 +106,13 @@ def is_incorrectly_solved(result_tuple: tuple[bool, bool, str, float]) -> bool:
     is_solved, is_correct, status_str, cputime = result_tuple
     return is_solved and not is_correct
 
+def is_solved(result_tuple: tuple[bool, bool, str, float]) -> bool:
+    """
+    check whether a tool-config result tuple is solved
+    """
+    is_solved, is_correct, status_str, cputime = result_tuple
+    return is_solved
+
 def get_solved_num_for_dict(result_dict):
     """
     get the number of correctly solved benchmarks from a tool-config result dictionary
@@ -166,30 +173,9 @@ def get_sbs(result_dict, dict_eval_func):
     assert best_config != -1
     return best_config
 
-def main():
-    TIMEOUT = 900
-    file_path = '/Users/zhengyanglu/Desktop/btor2select/bv_data/preprocessed_bv_results_0623.table.csv'
-    result_dict, tool_config_dict = parse_from_tsv(file_path)
-    tool_config_num = len(tool_config_dict)
-    benchmark_size = len(result_dict)
-    single_best_config = -1
-    single_best_par2 = float('inf')
-    for i in range(tool_config_num):
-        one_resdict = generate_one_resdict(result_dict, i)
-        one_solved = get_solved_num_for_dict(one_resdict)
-        one_par2 = get_par_N_for_dict(one_resdict, 2, TIMEOUT)
-        print(f"tool-config {i}: {one_solved} solved, PAR-2: {one_par2:.1f} ({tool_config_dict[i][1]})")
-        if one_par2 < single_best_par2:
-            single_best_config = i
-            single_best_par2 = one_par2
-    print()
-    assert single_best_config != -1
-    single_best_solved = get_solved_num_for_dict(generate_one_resdict(result_dict, single_best_config))
-    print(f"Single Best: {tool_config_dict[single_best_config][1]}/{benchmark_size}, {single_best_solved} solved, PAR-2: {single_best_par2:.1f}")
-    vbs_resdict = generate_vbs_resdict(result_dict)
-    vbs_solved = get_solved_num_for_dict(vbs_resdict)
-    vbs_par2 = get_par_N_for_dict(vbs_resdict, 2, TIMEOUT)
-    print(f"Virtual Best: {vbs_solved}/{benchmark_size} solved, PAR-2: {vbs_par2:.1f}")
+def delete_unsolvables_from_dict(all_result_dict):
+    """
+    delete the unsolvable benchmarks from the result dictionary
+    """
+    return {bench_path: config_results for bench_path, config_results in all_result_dict.items() if any([is_solved(result_tuple) for result_tuple in config_results])}
 
-if __name__ == '__main__':
-    main()
