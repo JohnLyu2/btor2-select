@@ -1,4 +1,4 @@
-This is the repo for the Google Summer of Code 2024 project [Adaptive Algorithm Selection for Btor2 Verification Tasks](https://summerofcode.withgoogle.com/programs/2024/projects/FGmF8gS3). Btor2-Select is an algorithm selector for the word-level hardware model-checking problem described in the Btor2 language. In addtion to traditional algorithm selection approaches such as Empircal Hardness Model and Pairwise Classifier, Btor2-Selector also implements an RL-based adapative algorithm selection framework! See our GSoC'24 report for more details. 
+This is the repo for the Google Summer of Code 2024 project [Adaptive Algorithm Selection for Btor2 Verification Tasks](https://summerofcode.withgoogle.com/programs/2024/projects/FGmF8gS3). Btor2-Select is an algorithm selector for the word-level hardware model-checking problem described in the Btor2 language. In addtion to traditional algorithm selection approaches such as Empircal Hardness Model and Pairwise Classifier, Btor2-Selector also implements an RL-based adapative algorithm selection framework! See our [GSoC'24 report](https://drive.google.com/file/d/167-3c_8p5z7e669eH9iGO8PN928rbI7G/view?usp=drive_link) for more details. 
 
 ## Requirements and Installation
 
@@ -24,7 +24,7 @@ The performance data of each component verifier are stored in `performance_data/
 We provide a Jupyter Notebook `reproduce_gsoc.ipynb` to interactively reproduce the GSoC results.
 
 ## AAAI'25 Student Abstract
-Some preliminary results from this project will be presented at the Student Program at AAAI'25! We provide a Jupyter Notebook `reproduce_aaai.ipynb` to interactively reproduce our results in our AAAI'25 paper. 
+Some preliminary results from this project will be presented at the Student Program at AAAI'25! We provide a Jupyter Notebook `reproduce_aaai.ipynb` to interactively reproduce our AAAI'25 paper. 
 
 ## HWMCC'24 Submission
 We submitted a sequential compositional verifier `Btor2-SelectMC` to [HWMCC'24](https://hwmcc.github.io/2024/) based on this work. Check our submission at this [Zenodo link](https://zenodo.org/records/13627812).
